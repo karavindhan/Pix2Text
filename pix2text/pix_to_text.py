@@ -258,6 +258,7 @@ class Pix2Text(object):
         layout_out, column_meta = self.layout_parser.parse(
             img0.copy(), **layout_kwargs,
         )
+        # print("layout_out {} column_meta {}".format(layout_out, column_meta))
 
         debug_dir = None
         if kwargs.get('save_debug_res', None):

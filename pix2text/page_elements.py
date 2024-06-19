@@ -2,6 +2,7 @@
 import dataclasses
 from pathlib import Path
 import re
+import json
 from typing import Sequence, Any, Union, Optional
 
 from PIL import Image
@@ -9,6 +10,7 @@ from PIL import Image
 from .table_ocr import visualize_cells
 from .utils import merge_line_texts, smart_join
 from .layout_parser import ElementType
+import numpy as np
 
 
 @dataclasses.dataclass
@@ -159,6 +161,9 @@ class Element(object):
         # max_width = max(box_width(self.box), box_width(other.box))
         # return abs(self.box[0] - other.box[0]) < max_width / 2
 
+    def toJson(self):
+        return self.to_dict()
+
 
 def box_width(box):
     return box[2] - box[0]
@@ -270,6 +275,14 @@ class Page(object):
         if root_url is not None:
             return f'{root_url}/{rel_url}'
         return str(rel_url)
+    def toJson(self):
+        return {
+                "number": self.number,
+                "id": self.id,
+                "elements": [el.toJson() for el in self.elements],
+                "config": self.config,
+        }
+
 
 
 class Document(object):
@@ -345,3 +358,16 @@ class Document(object):
             with open(out_dir / markdown_fn, 'w', encoding='utf-8') as f:
                 f.write(md_out)
         return md_out
+
+class PageJsonEncoder(json.JSONEncoder):
+    def default(self, z):
+        if isinstance(z, Page):
+            return z.toJson()
+        elif isinstance(z, np.ndarray):
+            return z.tolist()
+        elif isinstance(z, ElementType):
+            return str(z)
+        elif isinstance(z, Image.Image):
+            return str(z)
+        else:
+            return super().default(z)

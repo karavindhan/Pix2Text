@@ -10,3 +10,4 @@ from .formula_detector import MathFormulaDetector
 from .text_formula_ocr import TextFormulaOCR
 from .table_ocr import TableOCR
 from .pix_to_text import Pix2Text
+from .page_elements import PageJsonEncoder

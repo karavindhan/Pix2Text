@@ -14,6 +14,7 @@ import numpy as np
 import torch
 from cnstd.utils import box_partial_overlap
 from spellchecker import SpellChecker
+import traceback
 
 from .utils import (
     sort_boxes,
@@ -182,6 +183,7 @@ class TextFormulaOCR(object):
     def recognize(
         self, img: Union[str, Path, Image.Image], return_text: bool = True, **kwargs
     ) -> Union[str, List[Dict[str, Any]]]:
+        print(traceback.format_exc())
         """
         Perform Mathematical Formula Detection (MFD) on the image, and then recognize the information contained in each section.
 
